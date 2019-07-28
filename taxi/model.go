@@ -9,12 +9,12 @@ type averageSpeedDay struct {
 // total number trips on a day
 type totalTripsDay struct {
 	Date       string
-	TotalTrips string `json:"total_trips"`
+	TotalTrips int `json:"total_trips,string"`
 }
 
 // pick up location and fare price
 type farePickupLocation struct {
-	Lng  string `json:"pickup_longitude"`
-	Lat  string `json:"pickup_latitude"`
-	Fare string `json:"fare_amount"`
+	Lng  float64 `json:"pickup_longitude,string"`
+	Lat  float64 `json:"pickup_latitude,string"`
+	Fare float64 `json:"fare_amount,string"`
 }

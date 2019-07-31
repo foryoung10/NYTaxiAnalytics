@@ -18,3 +18,8 @@ type farePickupLocation struct {
 	Lat  float64 `json:"pickup_latitude,string"`
 	Fare float64 `json:"fare_amount,string"`
 }
+
+type s2idFare struct {
+	s2id string
+	fare float64
+}

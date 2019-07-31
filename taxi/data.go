@@ -5,7 +5,12 @@ package taxi
 
 // all pickup locations lat, long and fare amount
 var faresData = `
-[
+[   
+    {
+      "pickup_longitude": "-51.1408982",
+      "pickup_latitude" : "-30.0441054",
+      "fare_amount": "4.32"
+    },
     {
         "pickup_longitude": "-73.91737365722656",
         "pickup_latitude": "40.61402130126953",
@@ -35,6 +40,46 @@ var faresData = `
         "pickup_longitude": "-73.92514038085938",
         "pickup_latitude": "40.807518005371094",
         "fare_amount": "0.0"
+    },
+    {
+      "pickup_longitude": "-51.1395916",
+      "pickup_latitude": "-30.0436491",
+      "fare_amount": "10.0"
+    },
+    {
+      "pickup_longitude": "-51.1905683",
+      "pickup_latitude": "-30.0320944",
+      "fare_amount": "10.0"
+    },
+    {
+      "pickup_longitude": "-51.1905683",
+      "pickup_latitude": "-30.0331944",
+      "fare_amount": "10.0"
+    },
+    {
+      "pickup_longitude": "-74.005106",
+      "pickup_latitude": "40.710977",
+      "fare_amount": "10.0"
+    },
+    {
+      "pickup_longitude": "-74.005433",
+      "pickup_latitude": "40.711306",
+      "fare_amount": "15.0"
+    },
+    {
+      "pickup_longitude": "-74.009666",
+      "pickup_latitude": "40.714963",
+      "fare_amount": "10.0"
+    },
+    {
+      "pickup_longitude": "-74.010205",
+      "pickup_latitude": "40.715170",
+      "fare_amount": "15.0"
+    },
+    {
+      "pickup_longitude": "-74.009881",
+      "pickup_latitude": "40.714709",
+      "fare_amount": "30.0"
     }
 ]`
 

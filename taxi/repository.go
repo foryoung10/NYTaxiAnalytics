@@ -1,7 +1,7 @@
 package taxi
 
 import (
-	"NYTaxiAnalytics/handlers"
+	"NYTaxiAnalytics/database"
 
 	"cloud.google.com/go/bigquery"
 	"google.golang.org/api/iterator"
@@ -14,7 +14,7 @@ type TaxiRepo interface {
 }
 
 type TaxiBQRepo struct {
-	client handlers.Client
+	client database.Client
 }
 
 func (r TaxiBQRepo) GetTotalTripsByStartEndDate(startDate string, endDate string) ([]TotalTripsByDay, error) {

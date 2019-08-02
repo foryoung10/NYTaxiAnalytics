@@ -1,13 +1,12 @@
 package taxi
 
 import (
-	"NYTaxiAnalytics/handlers"
+	"NYTaxiAnalytics/database"
 	"encoding/json"
-	"fmt"
 )
 
 type TaxiJsonRepo struct {
-	Client           handlers.Client
+	Client           database.Client
 	tripsData        string
 	averageSpeedData string
 	faresData        string
@@ -31,8 +30,6 @@ func (r TaxiJsonRepo) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, e
 		return nil, err
 	}
 
-	fmt.Println(result)
-
 	return result, nil
 
 }
@@ -43,8 +40,6 @@ func (r TaxiJsonRepo) GetAverageFareByLocation(date string) ([]FarePickupByLocat
 	if err := json.Unmarshal([]byte(r.faresData), &result); err != nil {
 		return nil, err
 	}
-
-	fmt.Println(result)
 
 	return result, nil
 }

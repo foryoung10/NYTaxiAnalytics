@@ -1,13 +1,13 @@
-package handlers
+package database
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"os"
 
 	"cloud.google.com/go/bigquery"
 )
+
+type BigQueryClient struct{}
 
 type Configuration struct {
 	ApplicationCredentialsPath string
@@ -16,12 +16,14 @@ type Configuration struct {
 
 var config = Configuration{}
 
+// to do initialize in main method
 // Initializing Big Query handler, reading config file for
 // Google application credentials and project name
+/*
 func init() {
 	fmt.Println("Initializing Big Query handler")
 
-	file, err := os.Open("config.json")
+	file, err := os.Open("../config.json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -40,18 +42,23 @@ func init() {
 
 	fmt.Println(config.ApplicationCredentialsPath, config.ProjectName)
 }
-
+*/
 // Exceute a query using the big query client
-func BigQueryClient(q string) (*bigquery.RowIterator, error) {
-
+func (c BigQueryClient) Query(q string, parameters []bigquery.QueryParameter) (*bigquery.RowIterator, error) {
+	fmt.Println("running BigQueryClient")
 	ctx := context.Background()
 
 	client, err := bigquery.NewClient(ctx, config.ProjectName)
 	if err != nil {
-		return nil, err
+		fmt.Println(err)
+		//	return nil, err
 	}
 
 	query := client.Query(q)
+	query.Parameters = parameters
+	query.DryRun = true
+
+	fmt.Println(query.Q)
 
 	return query.Read(ctx)
 }

@@ -2,45 +2,47 @@
 package taxi
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"github.com/golang/geo/s2"
 )
 
+type IService interface {
+	GetTotalTripsByStartEndDate(string, string) ([]TotalTripsByDay, error)
+	GetAverageSpeedByDate(string) ([]AverageSpeedByDay, error)
+	GetAverageFarePickUpByLocation(string, int) ([]s2idFare, error)
+}
+
+type Service struct {
+	Repo TaxiRepo
+}
+
 // For start and end date, return total number of trips
-func TotalTrips(startDate string, endDate string) {
-	var result []totalTripsDay
+func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string) ([]TotalTripsByDay, error) {
+	var result []TotalTripsByDay
 
-	if err := json.Unmarshal([]byte(totalTripsData), &result); err != nil {
-		panic(err)
-	}
+	result, _ = s.Repo.GetTotalTripsByStartEndDate(startDate, endDate)
 
-	fmt.Println(result)
+	return result, nil
 }
 
 // For date, return the average speed
-func AverageSpeed(date string) {
-	var result []averageSpeedDay
+func (s Service) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, error) {
+	var result []AverageSpeedByDay
 
-	if err := json.Unmarshal([]byte(averageSpeedData), &result); err != nil {
-		panic(err)
-	}
+	result, _ = s.Repo.GetAverageSpeedByDate(date)
 
-	fmt.Println(result)
+	return result, nil
 }
 
 // For date, return average fare level of a location's s2id
 // Using s2 library and region coverer to get s2id at level 16
 
-func AverageFareLevel(date string, level int) {
+func (s Service) GetAverageFarePickUpByLocation(date string, level int) ([]s2idFare, error) {
 
-	var data []farePickupLocation
+	// client.Query("averageFareQuery")
+	var data []FarePickupByLocation
 	var fareByLocation []s2idFare
 
-	if err := json.Unmarshal([]byte(faresData), &data); err != nil {
-		panic(err)
-	}
+	data, _ = s.Repo.GetAverageFareByLocation(date)
 
 	for i := 0; i < len(data); i++ {
 
@@ -63,8 +65,6 @@ func AverageFareLevel(date string, level int) {
 			fareByLocation = append(fareByLocation, s2idFare{s2id: cellUnion[j].ToToken(), fare: data[i].Fare})
 		}
 
-		fmt.Println(fareByLocation)
-
 	}
-
+	return fareByLocation, nil
 }

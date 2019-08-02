@@ -2,18 +2,18 @@
 package taxi
 
 // average speed of all trips on a day
-type averageSpeedDay struct {
+type AverageSpeedByDay struct {
 	AverageSpeed float64 `json:"average_speed"`
 }
 
 // total number trips on a day
-type totalTripsDay struct {
+type TotalTripsByDay struct {
 	Date       string
 	TotalTrips int `json:"total_trips,string"`
 }
 
 // pick up location and fare price
-type farePickupLocation struct {
+type FarePickupByLocation struct {
 	Lng  float64 `json:"pickup_longitude,string"`
 	Lat  float64 `json:"pickup_latitude,string"`
 	Fare float64 `json:"fare_amount,string"`

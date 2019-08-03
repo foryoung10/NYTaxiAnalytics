@@ -4,7 +4,7 @@
 package taxi
 
 // all pickup locations lat, long and fare amount
-var faresData = []string{
+var FaresData = []string{
 	`[
   {
     "pickup_longitude": "-73.994873046875",
@@ -119,7 +119,7 @@ var faresData = []string{
 }
 
 // the average speed of all trips over the last 24 hours
-var averageSpeedData = []string{
+var AverageSpeedData = []string{
 	`[
     {
       "average_speed": 14.1
@@ -138,7 +138,7 @@ var averageSpeedData = []string{
 }
 
 // total number of trips on each day
-var totalTripsData = []string{
+var TotalTripsData = []string{
 	` [
       {
         "date": "2015-01-01",
@@ -272,59 +272,59 @@ var averageSpeedResult = [][]AverageSpeedByDay{
 	},
 }
 
-var averageFaresLocationResult = [][]s2idFare{
+var averageFaresLocationResult = [][]S2idFare{
 	{
 		{
-			s2id: "89c25a3a1",
-			fare: 27.0,
+			S2id: "89c25a3a1",
+			Fare: 27.0,
 		},
 		{
-			s2id: "89c2f5dd3",
-			fare: 0.0,
+			S2id: "89c2f5dd3",
+			Fare: 0.0,
 		},
 		{
-			s2id: "951977d37",
-			fare: 10.0,
+			S2id: "951977d37",
+			Fare: 10.0,
 		},
 		{
-			s2id: "951978321",
-			fare: 10.0,
+			S2id: "951978321",
+			Fare: 10.0,
 		},
 	},
 	{
 		{
-			s2id: "951977d39",
-			fare: 4.32,
+			S2id: "951977d39",
+			Fare: 4.32,
 		},
 		{
-			s2id: "89c243469",
-			fare: 27.5,
+			S2id: "89c243469",
+			Fare: 27.5,
 		},
 		{
-			s2id: "89c259671",
-			fare: 24.5,
+			S2id: "89c259671",
+			Fare: 24.5,
 		},
 		{
-			s2id: "89c25b03f",
-			fare: 26.5,
+			S2id: "89c25b03f",
+			Fare: 26.5,
 		},
 		{
-			s2id: "89c25e335",
-			fare: 37.6,
+			S2id: "89c25e335",
+			Fare: 37.6,
 		},
 	},
 	{
 		{
-			s2id: "95197831f",
-			fare: 10,
+			S2id: "95197831f",
+			Fare: 10,
 		},
 		{
-			s2id: "89c25a229",
-			fare: 12.5,
+			S2id: "89c25a229",
+			Fare: 12.5,
 		},
 		{
-			s2id: "89c25a1ed",
-			fare: 34.166666666666664,
+			S2id: "89c25a1ed",
+			Fare: 34.166666666666664,
 		},
 	},
 	{},

@@ -8,7 +8,7 @@ import (
 type IService interface {
 	GetTotalTripsByStartEndDate(string, string) ([]TotalTripsByDay, error)
 	GetAverageSpeedByDate(string) ([]AverageSpeedByDay, error)
-	GetAverageFarePickUpByLocation(string, int) ([]s2idFare, error)
+	GetAverageFarePickUpByLocation(string, int) ([]S2idFare, error)
 }
 
 type Service struct {
@@ -35,33 +35,34 @@ func (s Service) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, error)
 
 // For date, return average fare level of a location's s2id
 // Using s2 library and region coverer to get s2id at level 16
-
-func (s Service) GetAverageFarePickUpByLocation(date string, level int) ([]s2idFare, error) {
+func (s Service) GetAverageFarePickUpByLocation(date string, level int) ([]S2idFare, error) {
 
 	var data []FarePickupByLocation
-	var fareByLocation []s2idFare
+	var fareByLocation []S2idFare
 
-	data, _ = s.Repo.GetAverageFareByLocation(date)
+	data, err := s.Repo.GetAverageFareByLocation(date)
 
-	for i := 0; i < len(data); i++ {
+	if data != nil && err == nil {
+		for i := 0; i < len(data); i++ {
 
-		// Get latlng and convert to point
-		latlng := s2.LatLngFromDegrees(data[i].Lat, data[i].Lng).Normalized()
-		point := s2.PointFromLatLng(latlng)
+			// Get latlng and convert to point
+			latlng := s2.LatLngFromDegrees(data[i].Lat, data[i].Lng).Normalized()
+			point := s2.PointFromLatLng(latlng)
 
-		// Create cap from point
-		// Region from cap
-		cap := s2.CapFromPoint(point)
-		region := s2.Region(cap)
+			// Create cap from point
+			// Region from cap
+			cap := s2.CapFromPoint(point)
+			region := s2.Region(cap)
 
-		// Using region coverer set the level
-		// Use covering to get list of cellids
-		rc := &s2.RegionCoverer{MaxLevel: level, MinLevel: level}
-		cellUnion := rc.Covering(region)
+			// Using region coverer set the level
+			// Use covering to get list of cellids
+			rc := &s2.RegionCoverer{MaxLevel: level, MinLevel: level}
+			cellUnion := rc.Covering(region)
 
-		// Return list of CellId and fare
-		for j := 0; j < len(cellUnion); j++ {
-			fareByLocation = append(fareByLocation, s2idFare{s2id: cellUnion[j].ToToken(), fare: data[i].Fare})
+			// Return list of CellId and fare
+			for j := 0; j < len(cellUnion); j++ {
+				fareByLocation = append(fareByLocation, S2idFare{S2id: cellUnion[j].ToToken(), Fare: data[i].Fare})
+			}
 		}
 	}
 
@@ -70,17 +71,17 @@ func (s Service) GetAverageFarePickUpByLocation(date string, level int) ([]s2idF
 	count := make(map[string]int)
 
 	for i := 0; i < len(fareByLocation); i++ {
-		s2id := fareByLocation[i].s2id
-		fare := fareByLocation[i].fare
+		s2id := fareByLocation[i].S2id
+		fare := fareByLocation[i].Fare
 
 		fares[s2id] += fare
 		count[s2id] += 1
 	}
 
-	var result []s2idFare
+	var result []S2idFare
 
 	for k, v := range fares {
-		result = append(result, s2idFare{s2id: k, fare: v / float64(count[k])})
+		result = append(result, S2idFare{S2id: k, Fare: v / float64(count[k])})
 	}
 
 	return result, nil

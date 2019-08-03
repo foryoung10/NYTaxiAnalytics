@@ -8,15 +8,15 @@ import (
 // TaxiJsonRepo is a mock repo that returns static Json data from the data file
 type TaxiJsonRepo struct {
 	Client           database.Client
-	tripsData        string
-	averageSpeedData string
-	faresData        string
+	TripsData        string
+	AverageSpeedData string
+	FaresData        string
 }
 
 func (r TaxiJsonRepo) GetTotalTripsByStartEndDate(startDate string, endDate string) ([]TotalTripsByDay, error) {
 	var result []TotalTripsByDay
 
-	if err := json.Unmarshal([]byte(r.tripsData), &result); err != nil {
+	if err := json.Unmarshal([]byte(r.TripsData), &result); err != nil {
 		return nil, err
 	}
 
@@ -27,7 +27,7 @@ func (r TaxiJsonRepo) GetTotalTripsByStartEndDate(startDate string, endDate stri
 func (r TaxiJsonRepo) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, error) {
 	var result []AverageSpeedByDay
 
-	if err := json.Unmarshal([]byte(r.averageSpeedData), &result); err != nil {
+	if err := json.Unmarshal([]byte(r.AverageSpeedData), &result); err != nil {
 		return nil, err
 	}
 
@@ -38,7 +38,7 @@ func (r TaxiJsonRepo) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, e
 func (r TaxiJsonRepo) GetAverageFareByLocation(date string) ([]FarePickupByLocation, error) {
 	var result []FarePickupByLocation
 
-	if err := json.Unmarshal([]byte(r.faresData), &result); err != nil {
+	if err := json.Unmarshal([]byte(r.FaresData), &result); err != nil {
 		return nil, err
 	}
 

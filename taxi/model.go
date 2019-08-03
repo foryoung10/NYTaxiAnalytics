@@ -19,7 +19,7 @@ type FarePickupByLocation struct {
 	Fare float64 `json:"fare_amount,string"`
 }
 
-type s2idFare struct {
-	s2id string
-	fare float64
+type S2idFare struct {
+	S2id string  `json:"s2id"`
+	Fare float64 `json:"fare"`
 }

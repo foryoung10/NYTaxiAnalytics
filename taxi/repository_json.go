@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 )
 
+// TaxiJsonRepo is a mock repo that returns static Json data from the data file
 type TaxiJsonRepo struct {
 	Client           database.Client
 	tripsData        string

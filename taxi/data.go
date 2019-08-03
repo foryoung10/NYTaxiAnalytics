@@ -25,7 +25,7 @@ var faresData = []string{
     "pickup_longitude": "-51.1905683",
     "pickup_latitude": "-30.0320944",
     "fare_amount": "10.0"
-  },
+  }
 ]`,
 	`[   
   {
@@ -53,6 +53,16 @@ var faresData = []string{
       "pickup_latitude": "40.73643112182617",
       "fare_amount": "40.0"
   },
+  {
+    "pickup_longitude": "-73.85911560058594",
+    "pickup_latitude": "40.73643112182617",
+    "fare_amount": "35.0"
+  },
+  {
+    "pickup_longitude": "-73.85911560058594",
+    "pickup_latitude": "40.73643112182617",
+    "fare_amount": "37.8"
+  }
 ]`,
 	`[  
   {
@@ -84,6 +94,24 @@ var faresData = []string{
     "pickup_longitude": "-74.009881",
     "pickup_latitude": "40.714709",
     "fare_amount": "30.0",
+    "test_property":12345
+  },
+  {
+    "pickup_longitude": "-74.009881",
+    "pickup_latitude": "40.714709",
+    "fare_amount": "40.0",
+    "test_property":12345
+  },
+  {
+    "pickup_longitude": "-74.009881",
+    "pickup_latitude": "40.714709",
+    "fare_amount": "50.0",
+    "test_property":12345
+  },
+  {
+    "pickup_longitude": "-74.009881",
+    "pickup_latitude": "40.714709",
+    "fare_amount": "60.0",
     "test_property":12345
   }
 ]`,
@@ -162,14 +190,15 @@ var totalTripsData = []string{
       },
       {
         "date": "2015-01-12",
-        "total_trips": "396367"
+        "total_trips": "396367",
+        "random_property": "123"
       }
     ]`,
 	`[
     ]`,
 }
 
-var TotalTripsResult = [][]TotalTripsByDay{
+var totalTripsResult = [][]TotalTripsByDay{
 	{
 		{
 			Date:       "2015-01-01",
@@ -241,4 +270,62 @@ var averageSpeedResult = [][]AverageSpeedByDay{
 	{
 		{},
 	},
+}
+
+var averageFaresLocationResult = [][]s2idFare{
+	{
+		{
+			s2id: "89c25a3a1",
+			fare: 27.0,
+		},
+		{
+			s2id: "89c2f5dd3",
+			fare: 0.0,
+		},
+		{
+			s2id: "951977d37",
+			fare: 10.0,
+		},
+		{
+			s2id: "951978321",
+			fare: 10.0,
+		},
+	},
+	{
+		{
+			s2id: "951977d39",
+			fare: 4.32,
+		},
+		{
+			s2id: "89c243469",
+			fare: 27.5,
+		},
+		{
+			s2id: "89c259671",
+			fare: 24.5,
+		},
+		{
+			s2id: "89c25b03f",
+			fare: 26.5,
+		},
+		{
+			s2id: "89c25e335",
+			fare: 37.6,
+		},
+	},
+	{
+		{
+			s2id: "95197831f",
+			fare: 10,
+		},
+		{
+			s2id: "89c25a229",
+			fare: 12.5,
+		},
+		{
+			s2id: "89c25a1ed",
+			fare: 34.166666666666664,
+		},
+	},
+	{},
 }

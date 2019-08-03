@@ -24,7 +24,7 @@ func TestGetTotalTripsByStartEndDate(t *testing.T) {
 		var s IService = Service{Repo: r}
 
 		res, _ := s.GetTotalTripsByStartEndDate(startDate, endDate)
-		expectedResult := TotalTripsResult[i]
+		expectedResult := totalTripsResult[i]
 
 		resLength := len(res)
 		expectedLength := len(expectedResult)
@@ -75,6 +75,46 @@ func TestGetAverageSpeedByDate(t *testing.T) {
 		for j := 0; j < resLength; j++ {
 			if res[j] != expectedResult[j] {
 				t.Errorf("Error with received %v and expected %v", res[j], expectedResult[j])
+			}
+		}
+	}
+}
+
+func TestGetAverageFarePickUpByLocation(t *testing.T) {
+
+	const date string = "2015-01-01"
+	const level int = 16
+
+	t.Log("Running TestGetAverageFarePickUpByLocation")
+
+	client := database.TestClient{}
+
+	for i := 0; i < len(faresData); i++ {
+
+		t.Logf("Testcase - %v", i+1)
+
+		var r TaxiRepo = TaxiJsonRepo{
+			Client:    client,
+			faresData: faresData[i]}
+
+		var s IService = Service{Repo: r}
+
+		res, _ := s.GetAverageFarePickUpByLocation(date, level)
+		expectedResult := averageFaresLocationResult[i]
+
+		// convert expectedResult to map
+
+		expectedMap := make(map[string]float64)
+
+		for z := 0; z < len(expectedResult); z++ {
+			expectedMap[expectedResult[z].s2id] = expectedResult[z].fare
+		}
+
+		t.Log("Comparing values of result and expected")
+		for j := 0; j < len(res); j++ {
+			id := res[j].s2id
+			if res[j].fare != expectedMap[id] {
+				t.Errorf("Error with received %v and expected %v", res[j].fare, expectedMap[id])
 			}
 		}
 	}

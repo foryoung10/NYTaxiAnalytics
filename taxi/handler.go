@@ -1,7 +1,6 @@
 package taxi
 
 import (
-	"encoding/json"
 	"errors"
 	"net/http"
 	"time"
@@ -19,83 +18,90 @@ type Handler struct {
 	Svc IService
 }
 
+// Fetch total trips for a start and end date
 func (hand Handler) FetchTotalTrips() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		startDate := c.Query("start-date")
 		endDate := c.Query("end-date")
 
-		res, err := hand.Svc.GetTotalTripsByStartEndDate(startDate, endDate)
+		year, err := getYearValidateStartEndDate(startDate, endDate)
+		if err != nil {
+			c.JSON(http.StatusNotFound, err.Error())
+		}
+		if year > 2017 || year < 2014 {
+			c.JSON(http.StatusNoContent, "")
+			return
+		}
 
+		res, err := hand.Svc.GetTotalTripsByStartEndDate(startDate, endDate)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err.Error())
 			return
 		}
-
 		if len(res) == 0 {
 			c.JSON(http.StatusNoContent, "")
 			return
 		}
 
-		jsonData, err := json.Marshal(res)
-
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, err.Error())
-		}
-
-		c.JSON(http.StatusOK, jsonData)
+		c.JSON(http.StatusOK, res)
 	}
 }
 
+// Fetch average speed for the last 24 hours (current date -1)
 func (hand Handler) FetchAverageSpeed() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		date := c.Query("date")
 
-		res, err := hand.Svc.GetAverageSpeedByDate(date)
+		// Get previous date and year
+		prevDate, year, err := getPreviousDateYear(date)
+		if err != nil {
+			c.JSON(http.StatusNotFound, err.Error())
+		}
+		if year > 2017 || year < 2014 {
+			c.JSON(http.StatusNoContent, "")
+			return
+		}
 
+		res, err := hand.Svc.GetAverageSpeedByDate(prevDate)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err.Error())
 			return
 		}
-
 		if len(res) == 0 {
 			c.JSON(http.StatusNoContent, "")
 			return
 		}
 
-		jsonData, err := json.Marshal(res)
-
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, err.Error())
-		}
-
-		c.JSON(http.StatusOK, jsonData)
+		c.JSON(http.StatusOK, res)
 	}
 }
 
+// Fetch average fare for a date
 func (hand Handler) FetchAverageFareS2id() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		date := c.Query("date")
-
 		const level = 16
-		res, err := hand.Svc.GetAverageFarePickUpByLocation(date, 16)
 
+		year, err := getYearValidateDate(date)
+		if err != nil {
+			c.JSON(http.StatusNotFound, err.Error())
+		}
+		if year > 2017 || year < 2014 {
+			c.JSON(http.StatusNoContent, "")
+			return
+		}
+
+		res, err := hand.Svc.GetAverageFarePickUpByLocation(date, 16)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err.Error())
 			return
 		}
-
 		if len(res) == 0 {
 			c.JSON(http.StatusNoContent, "")
 			return
 		}
 
-		jsonData, err := json.Marshal(res)
-
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, err.Error())
-		}
-
-		c.JSON(http.StatusOK, jsonData)
+		c.JSON(http.StatusOK, res)
 	}
 }
 
@@ -109,7 +115,6 @@ func getPreviousDateYear(date string) (string, int, error) {
 	}
 
 	previousDate := time.AddDate(0, 0, -1)
-
 	year := previousDate.Year()
 
 	return previousDate.Format(format), year, nil
@@ -122,12 +127,15 @@ func getYearValidateDate(date string) (int, error) {
 	if err != nil {
 		return 0, errors.New("Date should be in YYYY-MM-DD format")
 	}
+
 	year := time.Year()
 
 	return year, nil
 }
 
 // Returns the year
+// start date must be before end date
+// start date and end date must be in the same year to reduce size of data being queried
 func getYearValidateStartEndDate(startDate string, endDate string) (int, error) {
 	const format = "2006-01-02"
 

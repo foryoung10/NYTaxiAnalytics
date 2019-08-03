@@ -38,7 +38,6 @@ func (s Service) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, error)
 
 func (s Service) GetAverageFarePickUpByLocation(date string, level int) ([]s2idFare, error) {
 
-	// client.Query("averageFareQuery")
 	var data []FarePickupByLocation
 	var fareByLocation []s2idFare
 
@@ -64,7 +63,25 @@ func (s Service) GetAverageFarePickUpByLocation(date string, level int) ([]s2idF
 		for j := 0; j < len(cellUnion); j++ {
 			fareByLocation = append(fareByLocation, s2idFare{s2id: cellUnion[j].ToToken(), fare: data[i].Fare})
 		}
-
 	}
-	return fareByLocation, nil
+
+	// to do: improve average code
+	fares := make(map[string]float64)
+	count := make(map[string]int)
+
+	for i := 0; i < len(fareByLocation); i++ {
+		s2id := fareByLocation[i].s2id
+		fare := fareByLocation[i].fare
+
+		fares[s2id] += fare
+		count[s2id] += 1
+	}
+
+	var result []s2idFare
+
+	for k, v := range fares {
+		result = append(result, s2idFare{s2id: k, fare: v / float64(count[k])})
+	}
+
+	return result, nil
 }

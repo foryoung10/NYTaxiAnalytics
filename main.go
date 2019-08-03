@@ -3,35 +3,18 @@ package main
 import (
 	"NYTaxiAnalytics/database"
 	"NYTaxiAnalytics/taxi"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func setupRouter(s taxi.IService) *gin.Engine {
+func setupRouter(hand taxi.IHandler) *gin.Engine {
 
 	router := gin.New()
 
 	// Taxi api routes
-	router.GET("/total_trips", func(c *gin.Context) {
-		startdate := c.Query("start-date")
-		enddate := c.Query("end-date")
-
-		c.String(http.StatusOK, "Date %s %s", startdate, enddate)
-	})
-
-	router.GET("/average_speed", func(c *gin.Context) {
-		date := c.Query("date")
-
-		c.String(http.StatusOK, "Date %s", date)
-	})
-
-	router.GET("/average_fare_heatmap", func(c *gin.Context) {
-		date := c.Query("date")
-
-		c.String(http.StatusOK, "Date %s", date)
-
-	})
+	router.GET("/total_trips", hand.FetchTotalTrips())
+	router.GET("/average_speed", hand.FetchAverageSpeed())
+	router.GET("/average_fare_heatmap", hand.FetchAverageFareS2id())
 
 	return router
 }
@@ -47,11 +30,13 @@ func main() {
 	var r taxi.TaxiRepo = taxi.TaxiJsonRepo{
 		Client: client,
 	}
-	var s taxi.IService = taxi.Service{Repo: r}
+	var s = taxi.Service{Repo: r}
+	var hand = taxi.Handler{Svc: s}
 
 	// Setup router
-	router := setupRouter(s)
+	router := setupRouter(hand)
 
 	// Configure port
 	router.Run(":8080")
+
 }

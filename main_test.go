@@ -183,10 +183,20 @@ func TestFetchFetchAverageFareS2id(t *testing.T) {
 				},
 			}
 
+			// make map for testing
+			expectedMap := make(map[string]float64)
+			for z := 0; z < len(expectedResult); z++ {
+				expectedMap[expectedResult[z].S2id] = expectedResult[z].Fare
+			}
+
+			// use map for comparison
 			var response []taxi.S2idFare
 			json.Unmarshal([]byte(w.Body.String()), &response)
-			assert.Equal(t, response, expectedResult)
 
+			for j := 0; j < len(response); j++ {
+				id := response[j].S2id
+				assert.Equal(t, response[j].Fare, expectedMap[id])
+			}
 		}
 	}
 }

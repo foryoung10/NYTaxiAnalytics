@@ -27,6 +27,7 @@ func (hand Handler) FetchTotalTrips() func(c *gin.Context) {
 		year, err := getYearValidateStartEndDate(startDate, endDate)
 		if err != nil {
 			c.JSON(http.StatusNotFound, err.Error())
+			return
 		}
 		if year > 2017 || year < 2014 {
 			c.JSON(http.StatusNoContent, "")
@@ -44,6 +45,7 @@ func (hand Handler) FetchTotalTrips() func(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, res)
+		return
 	}
 }
 
@@ -56,6 +58,7 @@ func (hand Handler) FetchAverageSpeed() func(c *gin.Context) {
 		prevDate, year, err := getPreviousDateYear(date)
 		if err != nil {
 			c.JSON(http.StatusNotFound, err.Error())
+			return
 		}
 		if year > 2017 || year < 2014 {
 			c.JSON(http.StatusNoContent, "")
@@ -73,6 +76,7 @@ func (hand Handler) FetchAverageSpeed() func(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, res)
+		return
 	}
 }
 
@@ -85,6 +89,7 @@ func (hand Handler) FetchAverageFareS2id() func(c *gin.Context) {
 		year, err := getYearValidateDate(date)
 		if err != nil {
 			c.JSON(http.StatusNotFound, err.Error())
+			return
 		}
 		if year > 2017 || year < 2014 {
 			c.JSON(http.StatusNoContent, "")
@@ -102,6 +107,7 @@ func (hand Handler) FetchAverageFareS2id() func(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, res)
+		return
 	}
 }
 

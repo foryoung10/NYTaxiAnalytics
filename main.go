@@ -28,9 +28,13 @@ func main() {
 	// TO DO: switch to bigquery client when done
 	client := database.TestClient{}
 	var r taxi.TaxiRepo = taxi.TaxiJsonRepo{
-		Client: client,
+		Client:           client,
+		FaresData:        taxi.FaresData[0],
+		TripsData:        taxi.TotalTripsData[0],
+		AverageSpeedData: taxi.AverageSpeedData[0],
 	}
 	var s = taxi.Service{Repo: r}
+
 	var hand = taxi.Handler{Svc: s}
 
 	// Setup router

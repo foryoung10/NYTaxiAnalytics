@@ -34,16 +34,42 @@ func setupRouter(hand taxi.IHandler) *gin.Engine {
 	return router
 }
 
+// dev router uses json stored in data file
+func useDevRepo() taxi.TaxiRepo {
+	client := database.TestClient{}
+	var r taxi.TaxiRepo = taxi.TaxiJsonRepo{
+		Client:           client,
+		FaresData:        taxi.FaresData[0],
+		AverageSpeedData: taxi.AverageSpeedData[0],
+		TripsData:        taxi.TotalTripsData[0],
+	}
+
+	return r
+}
+
+// BQ repo connects and pulls data from BQ
+func useBQRepo() taxi.TaxiRepo {
+	// Setup client, taxi repo, service
+	client := database.BigQueryClient{}
+	var r taxi.TaxiRepo = taxi.TaxiBQRepo{
+		Client: client,
+	}
+	return r
+}
+
 func main() {
 	// Initialise logger
 	// Setup big query client
 	database.BigQueryClientSetup()
 
 	// Setup client, taxi repo, service
-	client := database.BigQueryClient{}
-	var r taxi.TaxiRepo = taxi.TaxiBQRepo{
-		Client: client,
-	}
+
+	// for dev
+	// var r = useDevRepo()
+
+	// for actual use
+	var r = useBQRepo()
+
 	var s = taxi.Service{Repo: r}
 	var hand = taxi.Handler{Svc: s}
 

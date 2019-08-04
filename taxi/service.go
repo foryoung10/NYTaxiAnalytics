@@ -19,7 +19,7 @@ type Service struct {
 func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
 	var result []TotalTripsByDay
 
-	result, _ = s.Repo.GetTotalTripsByStartEndDate(startDate, endDate)
+	result, _ = s.Repo.GetTotalTripsByStartEndDate(startDate, endDate, year)
 
 	return result, nil
 }
@@ -28,7 +28,7 @@ func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string, y
 func (s Service) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
 	var result []AverageSpeedByDay
 
-	result, _ = s.Repo.GetAverageSpeedByDate(date)
+	result, _ = s.Repo.GetAverageSpeedByDate(date, year)
 
 	return result, nil
 }
@@ -40,7 +40,7 @@ func (s Service) GetAverageFarePickUpByLocation(date string, year int, level int
 	var data []FarePickupByLocation
 	var fareByLocation []S2idFare
 
-	data, err := s.Repo.GetAverageFareByLocation(date)
+	data, err := s.Repo.GetAverageFareByLocation(date, year)
 
 	if data != nil && err == nil {
 		for i := 0; i < len(data); i++ {

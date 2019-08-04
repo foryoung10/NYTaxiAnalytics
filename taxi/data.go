@@ -139,63 +139,61 @@ var AverageSpeedData = []string{
 
 // total number of trips on each day
 var TotalTripsData = []string{
-	` [
-      {
-        "date": "2015-01-01",
-        "total_trips": "382014"
-      },
-      {
-        "date": "2015-01-02",
-        "total_trips": "345296"
-      },
-      {
-        "date": "2015-01-03",
-        "total_trips": "406769"
-      }
-    ]`,
-	` [
-      {
-        "date": "2015-01-04",
-        "total_trips": "328848"
-      },
-      {
-        "date": "2015-01-05",
-        "total_trips": "363454"
-      },
-      {
-        "date": "2015-01-06",
-        "total_trips": "384324"
-      },
-      {
-        "date": "2015-01-07",
-        "total_trips": "429653"
-      }
-    ]`,
-	` [
-      {
-        "date": "2015-01-08",
-        "total_trips": "450920"
-      },
-      {
-        "date": "2015-01-09",
-        "total_trips": "447947"
-      },
-      {
-        "date": "2015-01-10",
-        "total_trips": "515540"
-      },
-      {
-        "date": "2015-01-11",
-        "total_trips": "419629"
-      },
-      {
-        "date": "2015-01-12",
-        "total_trips": "396367",
-        "random_property": "123"
-      }
-    ]`,
 	`[
-    ]`,
+    {
+      "date": "2015-01-01",
+      "total_trips": 382014
+    },
+    {
+      "date": "2015-01-02",
+      "total_trips": 345296
+    },
+    {
+      "date": "2015-01-03",
+      "total_trips": 406769
+    }
+  ]`,
+	` [
+    {
+      "date": "2015-01-04",
+      "total_trips": 328848
+    },
+    {
+      "date": "2015-01-05",
+      "total_trips": 363454
+    },
+    {
+      "date": "2015-01-06",
+      "total_trips": 384324
+    },
+    {
+      "date": "2015-01-07",
+      "total_trips": 429653
+    }
+  ]`,
+	` [
+    {
+      "date": "2015-01-08",
+      "total_trips": 450920
+    },
+    {
+      "date": "2015-01-09",
+      "total_trips": 447947
+    },
+    {
+      "date": "2015-01-10",
+      "total_trips": 515540
+    },
+    {
+      "date": "2015-01-11",
+      "total_trips": 419629
+    },
+    {
+      "date": "2015-01-12",
+      "total_trips": 396367,
+      "random_property": "123"
+    }
+  ]`,
 }
 
 var totalTripsResult = [][]TotalTripsByDay{

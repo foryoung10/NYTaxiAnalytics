@@ -3,17 +3,14 @@ package taxi
 
 // average speed of all trips on a day
 type AverageSpeedByDay struct {
-	AverageSpeed float64 `bigquery:"average_speed"`
+	AverageSpeed float64 `bigquery:"average_speed" json:"average_speed"`
 }
 
 // total number trips on a day
 type TotalTripsByDay struct {
-	Date       string `json:"date"`
-	TotalTrips int    `bigquery:"total_trips"`
+	Date       string `bigquery:"date" json:"date"`
+	TotalTrips int    `bigquery:"total_trips" json:"total_trips"`
 }
-
-//Date       string `bigquery:"date"`
-//TotalTrips int64  `bigquery:"total_trips"`
 
 // pick up location and fare price
 type FarePickupByLocation struct {

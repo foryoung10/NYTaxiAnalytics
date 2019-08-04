@@ -2,6 +2,7 @@ package taxi
 
 import (
 	"NYTaxiAnalytics/database"
+	"log"
 	"strings"
 
 	"cloud.google.com/go/bigquery"
@@ -16,6 +17,10 @@ type TaxiRepo interface {
 	GetAverageFareByLocation(string, int) ([]FarePickupByLocation, error)
 }
 
+// Validation of start, end date and year is done by handler
+// Repo gets table based on year and creates the query
+// Sets big query parameters
+// Calls bigquery and returns data
 type TaxiBQRepo struct {
 	Client database.Client
 }
@@ -39,20 +44,24 @@ func (r TaxiBQRepo) GetTotalTripsByStartEndDate(startDate string, endDate string
 
 	rows, err := r.Client.Query(query, parameters)
 
+	log.Println(rows.TotalRows)
+
 	if err != nil {
 		return nil, err
 	}
 
 	for {
-		err := rows.Next(&res)
-
+		var tmp TotalTripsByDay
+		err := rows.Next(&tmp)
 		if err == iterator.Done {
 			break
 		}
 		if err != nil {
-
+			return nil, err
 		}
+		res = append(res, tmp)
 	}
+
 	return res, nil
 }
 
@@ -70,19 +79,24 @@ func (r TaxiBQRepo) GetAverageSpeedByDate(date string, year int) ([]AverageSpeed
 	rows, err := r.Client.Query(query, parameters)
 	var res []AverageSpeedByDay
 
+	log.Println(rows.TotalRows)
+
 	if err != nil {
 		return nil, err
 	}
 
 	for {
-		err := rows.Next(&res)
+		var tmp AverageSpeedByDay
+		err := rows.Next(&tmp)
 
 		if err == iterator.Done {
 			break
 		}
 		if err != nil {
-
+			return nil, err
 		}
+
+		res = append(res, tmp)
 	}
 
 	return res, nil
@@ -102,19 +116,26 @@ func (r TaxiBQRepo) GetAverageFareByLocation(date string, year int) ([]FarePicku
 	rows, err := r.Client.Query(query, parameters)
 	var res []FarePickupByLocation
 
+	log.Println(rows.TotalRows)
+
 	if err != nil {
 		return nil, err
 	}
 
-	if rows.TotalRows > 0 {
-		for {
-			err := rows.Next(&res)
+	for {
+		var tmp FarePickupByLocation
+		err := rows.Next(&tmp)
 
-			if err == iterator.Done {
-				break
-			}
+		if err == iterator.Done {
+			break
 		}
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, tmp)
 	}
+
 	return res, nil
 
 }

@@ -3,6 +3,9 @@ package main
 import (
 	"NYTaxiAnalytics/database"
 	"NYTaxiAnalytics/taxi"
+	"io"
+	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,6 +13,18 @@ import (
 func setupRouter(hand taxi.IHandler) *gin.Engine {
 
 	router := gin.New()
+
+	// Setup logger
+	router.Use(gin.Logger())
+
+	filePath := "log/gin.log"
+	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+	gin.DefaultWriter = io.MultiWriter(f)
+	log.SetOutput(gin.DefaultWriter)
+	log.SetFlags(log.LstdFlags)
 
 	// Taxi api routes
 	router.GET("/total_trips", hand.FetchTotalTrips())
@@ -20,21 +35,16 @@ func setupRouter(hand taxi.IHandler) *gin.Engine {
 }
 
 func main() {
+	// Initialise logger
 	// Setup big query client
 	database.BigQueryClientSetup()
 
 	// Setup client, taxi repo, service
-	// Use mock repo for development
-	// TO DO: switch to bigquery client when done
-	client := database.TestClient{}
-	var r taxi.TaxiRepo = taxi.TaxiJsonRepo{
-		Client:           client,
-		FaresData:        taxi.FaresData[0],
-		TripsData:        taxi.TotalTripsData[0],
-		AverageSpeedData: taxi.AverageSpeedData[0],
+	client := database.BigQueryClient{}
+	var r taxi.TaxiRepo = taxi.TaxiBQRepo{
+		Client: client,
 	}
 	var s = taxi.Service{Repo: r}
-
 	var hand = taxi.Handler{Svc: s}
 
 	// Setup router
@@ -42,5 +52,4 @@ func main() {
 
 	// Configure port
 	router.Run(":8080")
-
 }

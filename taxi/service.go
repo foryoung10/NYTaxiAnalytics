@@ -6,9 +6,9 @@ import (
 )
 
 type IService interface {
-	GetTotalTripsByStartEndDate(string, string) ([]TotalTripsByDay, error)
-	GetAverageSpeedByDate(string) ([]AverageSpeedByDay, error)
-	GetAverageFarePickUpByLocation(string, int) ([]S2idFare, error)
+	GetTotalTripsByStartEndDate(string, string, int) ([]TotalTripsByDay, error)
+	GetAverageSpeedByDate(string, int) ([]AverageSpeedByDay, error)
+	GetAverageFarePickUpByLocation(string, int, int) ([]S2idFare, error)
 }
 
 type Service struct {
@@ -16,7 +16,7 @@ type Service struct {
 }
 
 // For start and end date, return total number of trips
-func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string) ([]TotalTripsByDay, error) {
+func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
 	var result []TotalTripsByDay
 
 	result, _ = s.Repo.GetTotalTripsByStartEndDate(startDate, endDate)
@@ -25,7 +25,7 @@ func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string) (
 }
 
 // For date, return the average speed
-func (s Service) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, error) {
+func (s Service) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
 	var result []AverageSpeedByDay
 
 	result, _ = s.Repo.GetAverageSpeedByDate(date)
@@ -35,7 +35,7 @@ func (s Service) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, error)
 
 // For date, return average fare level of a location's s2id
 // Using s2 library and region coverer to get s2id at level 16
-func (s Service) GetAverageFarePickUpByLocation(date string, level int) ([]S2idFare, error) {
+func (s Service) GetAverageFarePickUpByLocation(date string, year int, level int) ([]S2idFare, error) {
 
 	var data []FarePickupByLocation
 	var fareByLocation []S2idFare

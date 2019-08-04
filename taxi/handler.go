@@ -34,7 +34,7 @@ func (hand Handler) FetchTotalTrips() func(c *gin.Context) {
 			return
 		}
 
-		res, err := hand.Svc.GetTotalTripsByStartEndDate(startDate, endDate)
+		res, err := hand.Svc.GetTotalTripsByStartEndDate(startDate, endDate, year)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err.Error())
 			return
@@ -65,7 +65,7 @@ func (hand Handler) FetchAverageSpeed() func(c *gin.Context) {
 			return
 		}
 
-		res, err := hand.Svc.GetAverageSpeedByDate(prevDate)
+		res, err := hand.Svc.GetAverageSpeedByDate(prevDate, year)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err.Error())
 			return
@@ -96,7 +96,7 @@ func (hand Handler) FetchAverageFareS2id() func(c *gin.Context) {
 			return
 		}
 
-		res, err := hand.Svc.GetAverageFarePickUpByLocation(date, 16)
+		res, err := hand.Svc.GetAverageFarePickUpByLocation(date, year, 16)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err.Error())
 			return

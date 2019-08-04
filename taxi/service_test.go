@@ -8,6 +8,7 @@ import (
 func TestGetTotalTripsByStartEndDate(t *testing.T) {
 	const startDate string = "2015-01-01"
 	const endDate string = "2015-02-02"
+	const year int = 2015
 
 	client := database.TestClient{}
 
@@ -19,7 +20,7 @@ func TestGetTotalTripsByStartEndDate(t *testing.T) {
 
 		var s IService = Service{Repo: r}
 
-		res, _ := s.GetTotalTripsByStartEndDate(startDate, endDate)
+		res, _ := s.GetTotalTripsByStartEndDate(startDate, endDate, year)
 		expectedResult := totalTripsResult[i]
 
 		resLength := len(res)
@@ -39,6 +40,7 @@ func TestGetTotalTripsByStartEndDate(t *testing.T) {
 
 func TestGetAverageSpeedByDate(t *testing.T) {
 	const date string = "2015-01-01"
+	const year int = 2015
 
 	client := database.TestClient{}
 
@@ -50,7 +52,7 @@ func TestGetAverageSpeedByDate(t *testing.T) {
 
 		var s IService = Service{Repo: r}
 
-		res, _ := s.GetAverageSpeedByDate(date)
+		res, _ := s.GetAverageSpeedByDate(date, year)
 		expectedResult := averageSpeedResult[i]
 
 		resLength := len(res)
@@ -71,6 +73,7 @@ func TestGetAverageSpeedByDate(t *testing.T) {
 func TestGetAverageFarePickUpByLocation(t *testing.T) {
 
 	const date string = "2015-01-01"
+	const year int = 2015
 	const level int = 16
 
 	client := database.TestClient{}
@@ -83,7 +86,7 @@ func TestGetAverageFarePickUpByLocation(t *testing.T) {
 
 		var s IService = Service{Repo: r}
 
-		res, _ := s.GetAverageFarePickUpByLocation(date, level)
+		res, _ := s.GetAverageFarePickUpByLocation(date, year, level)
 		expectedResult := averageFaresLocationResult[i]
 
 		// convert expectedResult to map

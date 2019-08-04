@@ -14,6 +14,13 @@ type IHandler interface {
 	FetchAverageFareS2id() func(c *gin.Context)
 }
 
+const maxYear = 2017
+const minYear = 2014
+const format = "2006-01-02"
+
+// Handler validates the input from api
+// If input is valid then calls service
+// Data is only available from @minYear to @maxYear
 type Handler struct {
 	Svc IService
 }
@@ -29,7 +36,7 @@ func (hand Handler) FetchTotalTrips() func(c *gin.Context) {
 			c.JSON(http.StatusNotFound, err.Error())
 			return
 		}
-		if year > 2017 || year < 2014 {
+		if year > maxYear || year < minYear {
 			c.JSON(http.StatusNoContent, "")
 			return
 		}
@@ -60,7 +67,7 @@ func (hand Handler) FetchAverageSpeed() func(c *gin.Context) {
 			c.JSON(http.StatusNotFound, err.Error())
 			return
 		}
-		if year > 2017 || year < 2014 {
+		if year > maxYear || year < minYear {
 			c.JSON(http.StatusNoContent, "")
 			return
 		}
@@ -91,7 +98,7 @@ func (hand Handler) FetchAverageFareS2id() func(c *gin.Context) {
 			c.JSON(http.StatusNotFound, err.Error())
 			return
 		}
-		if year > 2017 || year < 2014 {
+		if year > maxYear || year < minYear {
 			c.JSON(http.StatusNoContent, "")
 			return
 		}
@@ -113,7 +120,6 @@ func (hand Handler) FetchAverageFareS2id() func(c *gin.Context) {
 
 // Returns the previous date and year
 func getPreviousDateYear(date string) (string, int, error) {
-	const format = "2006-01-02"
 	time, err := time.Parse(format, date)
 
 	if err != nil {
@@ -128,7 +134,6 @@ func getPreviousDateYear(date string) (string, int, error) {
 
 // Returns the year
 func getYearValidateDate(date string) (int, error) {
-	const format = "2006-01-02"
 	time, err := time.Parse(format, date)
 	if err != nil {
 		return 0, errors.New("Date should be in YYYY-MM-DD format")
@@ -143,8 +148,6 @@ func getYearValidateDate(date string) (int, error) {
 // start date must be before end date
 // start date and end date must be in the same year to reduce size of data being queried
 func getYearValidateStartEndDate(startDate string, endDate string) (int, error) {
-	const format = "2006-01-02"
-
 	start, err := time.Parse(format, startDate)
 	if err != nil {
 		return 0, errors.New("Start date should be in YYYY-MM-DD format")

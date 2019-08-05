@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"cloud.google.com/go/bigquery"
+	"google.golang.org/api/option"
 )
 
 // Creates a Big Query Client connection
@@ -57,7 +58,7 @@ func (c BigQueryClient) Query(q string, parameters []bigquery.QueryParameter) (*
 
 	ctx := context.Background()
 
-	client, err := bigquery.NewClient(ctx, config.ProjectName)
+	client, err := bigquery.NewClient(ctx, config.ProjectName, option.WithCredentialsFile(config.ApplicationCredentialsPath))
 	if err != nil {
 		log.Println(err)
 		return nil, err

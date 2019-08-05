@@ -15,7 +15,7 @@ func TestGetTotalTripsByStartEndDate(t *testing.T) {
 
 	for i := 0; i < len(TotalTripsData); i++ {
 
-		var r TaxiRepo = TaxiJsonRepo{
+		var r Repository = JsonRepository{
 			Client:    client,
 			TripsData: TotalTripsData[i]}
 
@@ -47,7 +47,7 @@ func TestGetAverageSpeedByDate(t *testing.T) {
 
 	for i := 0; i < len(AverageSpeedData); i++ {
 
-		var r TaxiRepo = TaxiJsonRepo{
+		var r Repository = JsonRepository{
 			Client:           client,
 			AverageSpeedData: AverageSpeedData[i]}
 
@@ -81,7 +81,7 @@ func TestGetAverageFarePickUpByLocation(t *testing.T) {
 
 	for i := 0; i < len(FaresData); i++ {
 
-		var r TaxiRepo = TaxiJsonRepo{
+		var r Repository = JsonRepository{
 			Client:    client,
 			FaresData: FaresData[i]}
 

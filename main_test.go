@@ -30,7 +30,7 @@ func performRequest(r http.Handler, method, path string, param map[string]string
 
 func setUpTestRouterDeps() taxi.IHandler {
 	client := database.TestClient{}
-	var r taxi.TaxiRepo = taxi.TaxiJsonRepo{
+	var r taxi.Repository = taxi.JsonRepository{
 		Client:           client,
 		FaresData:        taxi.FaresData[0],
 		TripsData:        taxi.TotalTripsData[0],

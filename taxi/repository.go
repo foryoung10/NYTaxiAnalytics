@@ -12,7 +12,7 @@ import (
 
 const tablePlaceholder string = "@tables"
 
-type TaxiRepo interface {
+type Repository interface {
 	GetTotalTripsByStartEndDate(string, string, int) ([]TotalTripsByDay, error)
 	GetAverageSpeedByDate(string, int) ([]AverageSpeedByDay, error)
 	GetAverageFareByLocation(string, int) ([]FarePickupByLocation, error)
@@ -22,11 +22,11 @@ type TaxiRepo interface {
 // Repo gets table based on year and creates the query
 // Sets big query parameters
 // Calls bigquery and returns data
-type TaxiBQRepo struct {
+type BqRepository struct {
 	Client database.Client
 }
 
-func (r TaxiBQRepo) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
+func (r BqRepository) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
 
 	parameters := []bigquery.QueryParameter{
 		{
@@ -66,7 +66,7 @@ func (r TaxiBQRepo) GetTotalTripsByStartEndDate(startDate string, endDate string
 	return res, nil
 }
 
-func (r TaxiBQRepo) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
+func (r BqRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
 	parameters := []bigquery.QueryParameter{
 		{
 			Name:  "date",
@@ -103,7 +103,7 @@ func (r TaxiBQRepo) GetAverageSpeedByDate(date string, year int) ([]AverageSpeed
 	return res, nil
 }
 
-func (r TaxiBQRepo) GetAverageFareByLocation(date string, year int) ([]FarePickupByLocation, error) {
+func (r BqRepository) GetAverageFareByLocation(date string, year int) ([]FarePickupByLocation, error) {
 	parameters := []bigquery.QueryParameter{
 		{
 			Name:  "date",

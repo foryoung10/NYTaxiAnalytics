@@ -12,7 +12,7 @@ type IService interface {
 }
 
 type Service struct {
-	Repo TaxiRepo
+	Repo Repository
 }
 
 // For start and end date, return total number of trips

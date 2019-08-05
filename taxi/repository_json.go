@@ -10,12 +10,13 @@ import (
 
 // JsonRepository is a mock repo that returns static Json data from the data file
 type JsonRepository struct {
-	Client           database.Client
-	TripsData        string
-	AverageSpeedData string
-	FaresData        string
+	Client           database.Client // Set Client
+	TripsData        string          // Set Trips data
+	AverageSpeedData string          // Set Average speed data
+	FaresData        string          // Set Fare and location data
 }
 
+// GetTotalTripsByStartEndDate: Gets trips data for a start date and end date from the database and converts to TotalTripsByDay array.
 func (r JsonRepository) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
 	var result []TotalTripsByDay
 
@@ -27,6 +28,7 @@ func (r JsonRepository) GetTotalTripsByStartEndDate(startDate string, endDate st
 
 }
 
+// GetAverageSpeedByDate: Gets average speed data for a date from the database and converts to AverageSpeedByDay array.
 func (r JsonRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
 	var result []AverageSpeedByDay
 
@@ -38,6 +40,7 @@ func (r JsonRepository) GetAverageSpeedByDate(date string, year int) ([]AverageS
 
 }
 
+// GetFareLocationByDate: Get fares and location for a date from the database and converts to FarePickupByLocation array.
 func (r JsonRepository) GetFareLocationByDate(date string, year int) ([]FarePickupByLocation, error) {
 	var result []FarePickupByLocation
 

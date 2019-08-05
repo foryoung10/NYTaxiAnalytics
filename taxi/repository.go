@@ -14,22 +14,27 @@ import (
 
 const tablePlaceholder string = "@tables"
 
+// Repository handles data transfer between application and database.
+// GetTotalTripsByStartEndDate: Gets trips data for a start date and end date from the database and converts to TotalTripsByDay array.
+// GetAverageSpeedByDate: Gets average speed data for a date from the database and converts to AverageSpeedByDay array.
+// GetFareLocationByDate: Get fares and location for a date from the database and converts to FarePickupByLocation array.
 type Repository interface {
 	GetTotalTripsByStartEndDate(string, string, int) ([]TotalTripsByDay, error)
 	GetAverageSpeedByDate(string, int) ([]AverageSpeedByDay, error)
 	GetFareLocationByDate(string, int) ([]FarePickupByLocation, error)
 }
 
-// Validation of start, end date and year is done by handler
-// Repo gets table based on year and creates the query
-// Sets big query parameters
-// Calls bigquery and returns data
+// BQRepo queries and retrieves data from big query database.
+// The repo handles the setting of Big query parameters
+// The repo handles the query generation from the query file
+// The repo coverts the raw data to a struct
 type BqRepository struct {
-	Client database.Client
+	Client database.Client // Set Client
 }
 
+// GetTotalTripsByStartEndDate: Gets trips data for a start date and end date from the database and converts to TotalTripsByDay array.
 func (r BqRepository) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
-
+	// Set Big query parameters
 	parameters := []bigquery.QueryParameter{
 		{
 			Name:  "startDate",
@@ -41,6 +46,7 @@ func (r BqRepository) GetTotalTripsByStartEndDate(startDate string, endDate stri
 		},
 	}
 
+	// Generating query
 	var res []TotalTripsByDay
 	tables := getTaxiTables(year)
 	query := strings.Replace(totalTripsQ, tablePlaceholder, tables, 1)
@@ -53,6 +59,7 @@ func (r BqRepository) GetTotalTripsByStartEndDate(startDate string, endDate stri
 		return nil, err
 	}
 
+	// Read and converts to TotalTripsByDay array
 	for {
 		var tmp TotalTripsByDay
 		err := rows.Next(&tmp)
@@ -68,7 +75,9 @@ func (r BqRepository) GetTotalTripsByStartEndDate(startDate string, endDate stri
 	return res, nil
 }
 
+// GetAverageSpeedByDate: Gets average speed data for a date from the database and converts to AverageSpeedByDay array.
 func (r BqRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
+	// Set Big query parameters
 	parameters := []bigquery.QueryParameter{
 		{
 			Name:  "date",
@@ -76,6 +85,7 @@ func (r BqRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpe
 		},
 	}
 
+	// Generating query
 	tables := getTaxiTables(year)
 	query := strings.Replace(averageSpeedQ, tablePlaceholder, tables, 1)
 
@@ -88,6 +98,7 @@ func (r BqRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpe
 		return nil, err
 	}
 
+	// Read and converst to AverageSpeedByDay array
 	for {
 		var tmp AverageSpeedByDay
 		err := rows.Next(&tmp)
@@ -105,7 +116,9 @@ func (r BqRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpe
 	return res, nil
 }
 
+// GetFareLocationByDate: Get fares and location for a date from the database and converts to FarePickupByLocation array.
 func (r BqRepository) GetFareLocationByDate(date string, year int) ([]FarePickupByLocation, error) {
+	// Set big query parameters
 	parameters := []bigquery.QueryParameter{
 		{
 			Name:  "date",
@@ -113,6 +126,7 @@ func (r BqRepository) GetFareLocationByDate(date string, year int) ([]FarePickup
 		},
 	}
 
+	// Generating query
 	tables := getTaxiTables(year)
 	query := strings.Replace(fareLocationQ, tablePlaceholder, tables, 1)
 
@@ -125,6 +139,7 @@ func (r BqRepository) GetFareLocationByDate(date string, year int) ([]FarePickup
 		return nil, err
 	}
 
+	// Read and converts to FarePickupByLocation array
 	for {
 		var tmp FarePickupByLocation
 		err := rows.Next(&tmp)
@@ -143,7 +158,7 @@ func (r BqRepository) GetFareLocationByDate(date string, year int) ([]FarePickup
 
 }
 
-// returns 2 bigquery taxi tables based on year
+// Gets the table names based on the year
 func getTaxiTables(year int) string {
 	const schema = "`bigquery-public-data.new_york."
 

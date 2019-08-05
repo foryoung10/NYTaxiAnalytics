@@ -1,3 +1,5 @@
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data.
 package taxi
 
 import (
@@ -5,6 +7,8 @@ import (
 
 	"github.com/foryoung10/NYTaxiAnalytics/database"
 )
+
+// Tests for the taxi service methods.
 
 func TestGetTotalTripsByStartEndDate(t *testing.T) {
 	const startDate string = "2015-01-01"

@@ -6,17 +6,23 @@ import (
 	"github.com/golang/geo/s2"
 )
 
+// Service interface to apply business logic to dataset and transforming to the output.
+// GetTotalTripsByStartEndDate: Returns the TotalTripsByDay data from the repository.
+// GetAverageSpeedByDate: Returns the AverageSpeedByDay data from the repository.
+// GetAverageFarePickUpByLocation: Uses the geo s2 library to transform data to the S2idFare result.
 type IService interface {
 	GetTotalTripsByStartEndDate(string, string, int) ([]TotalTripsByDay, error)
 	GetAverageSpeedByDate(string, int) ([]AverageSpeedByDay, error)
 	GetAverageFarePickUpByLocation(string, int, int) ([]S2idFare, error)
 }
 
+// Service to apply business logic to dataset and transforming to the output.
 type Service struct {
-	Repo Repository
+	Repo Repository // Set Repository
 }
 
-// For start and end date, return total number of trips
+// GetTotalTripsByStartEndDate: Returns the TotalTripsByDay data from the repository.
+// No business logic is applied
 func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
 	var result []TotalTripsByDay
 
@@ -25,7 +31,8 @@ func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string, y
 	return result, nil
 }
 
-// For date, return the average speed
+// GetAverageSpeedByDate: Returns the AverageSpeedByDay data from the repository.
+// No business logic is applied
 func (s Service) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
 	var result []AverageSpeedByDay
 
@@ -34,8 +41,9 @@ func (s Service) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByD
 	return result, nil
 }
 
-// For date, return average fare level of a location's s2id
-// Using s2 library and region coverer to get s2id at level 16
+// GetAverageFarePickUpByLocation: Uses the geo s2 library to transform data to the S2idFare result.
+// Uses s2 library and region coverer to get s2id at level 16 for each location
+// Aggregates the location and returns the average fare
 func (s Service) GetAverageFarePickUpByLocation(date string, year int, level int) ([]S2idFare, error) {
 
 	var data []FarePickupByLocation
@@ -60,17 +68,19 @@ func (s Service) GetAverageFarePickUpByLocation(date string, year int, level int
 			rc := &s2.RegionCoverer{MaxLevel: level, MinLevel: level}
 			cellUnion := rc.Covering(region)
 
-			// Return list of CellId and fare
+			// Return list of s2id and fare
 			for j := 0; j < len(cellUnion); j++ {
 				fareByLocation = append(fareByLocation, S2idFare{S2id: cellUnion[j].ToToken(), Fare: data[i].Fare})
 			}
 		}
 	}
 
-	// to do: improve average code
+	// Create fares map to sum the fare for a s2id location.
 	fares := make(map[string]float64)
+	// Creates count map to count the number of s2id location.
 	count := make(map[string]int)
 
+	// Sum fare amount and count by the s2id location.
 	for i := 0; i < len(fareByLocation); i++ {
 		s2id := fareByLocation[i].S2id
 		fare := fareByLocation[i].Fare
@@ -81,6 +91,7 @@ func (s Service) GetAverageFarePickUpByLocation(date string, year int, level int
 
 	var result []S2idFare
 
+	// To get average get sum/count by s2id location
 	for k, v := range fares {
 		result = append(result, S2idFare{S2id: k, Fare: v / float64(count[k])})
 	}

@@ -49,9 +49,9 @@ http://localhost:8080/average_speed_24hrs?date=<date>>
 
 ## Design of Api
 
-The main design of the api is to let bigquery do the heavy lifting whenever possible.  
-Big query can process large volumnes of datasets very quickly.  
-Thus for 2 of the endpoints **Average speed in the past 24 hours** and **Total trips per day is a direct load** loads from big query processing.  
+The main design of the api is to let Big query do the heavy lifting whenever possible.  
+Big query can process large volumes of datasets very quickly.  
+Thus for 2 of the endpoints **Average speed in the past 24 hours** and **Total trips per day is a direct load** loads from Big query processing.  
 For the **Fare heatmap** data some processing is needed from the bigquery data.
 
 There are 2 packages  
@@ -88,4 +88,4 @@ The tables to query is generated based on the year as the bigquery data set is l
 #### client (database)
 
 The client connects and queries the database.
-Setsup and connects to the bigquery client with the query and query parameters.
+Setup and connects to the Big query client with the query and query parameters.

@@ -1,3 +1,4 @@
+// Package for connecting and querying databases
 package database
 
 import "cloud.google.com/go/bigquery"

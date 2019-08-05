@@ -1,3 +1,5 @@
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data.
 package taxi
 
 import (
@@ -36,7 +38,7 @@ func (r JsonRepository) GetAverageSpeedByDate(date string, year int) ([]AverageS
 
 }
 
-func (r JsonRepository) GetAverageFareByLocation(date string, year int) ([]FarePickupByLocation, error) {
+func (r JsonRepository) GetFareLocationByDate(date string, year int) ([]FarePickupByLocation, error) {
 	var result []FarePickupByLocation
 
 	if err := json.Unmarshal([]byte(r.FaresData), &result); err != nil {

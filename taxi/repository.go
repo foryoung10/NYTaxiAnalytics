@@ -1,3 +1,5 @@
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data.
 package taxi
 
 import (
@@ -15,7 +17,7 @@ const tablePlaceholder string = "@tables"
 type Repository interface {
 	GetTotalTripsByStartEndDate(string, string, int) ([]TotalTripsByDay, error)
 	GetAverageSpeedByDate(string, int) ([]AverageSpeedByDay, error)
-	GetAverageFareByLocation(string, int) ([]FarePickupByLocation, error)
+	GetFareLocationByDate(string, int) ([]FarePickupByLocation, error)
 }
 
 // Validation of start, end date and year is done by handler
@@ -103,7 +105,7 @@ func (r BqRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpe
 	return res, nil
 }
 
-func (r BqRepository) GetAverageFareByLocation(date string, year int) ([]FarePickupByLocation, error) {
+func (r BqRepository) GetFareLocationByDate(date string, year int) ([]FarePickupByLocation, error) {
 	parameters := []bigquery.QueryParameter{
 		{
 			Name:  "date",
@@ -112,7 +114,7 @@ func (r BqRepository) GetAverageFareByLocation(date string, year int) ([]FarePic
 	}
 
 	tables := getTaxiTables(year)
-	query := strings.Replace(averageFareQ, tablePlaceholder, tables, 1)
+	query := strings.Replace(fareLocationQ, tablePlaceholder, tables, 1)
 
 	rows, err := r.Client.Query(query, parameters)
 	var res []FarePickupByLocation

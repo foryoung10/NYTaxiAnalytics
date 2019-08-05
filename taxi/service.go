@@ -1,4 +1,5 @@
-// taxi analytics
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data.
 package taxi
 
 import (
@@ -40,7 +41,7 @@ func (s Service) GetAverageFarePickUpByLocation(date string, year int, level int
 	var data []FarePickupByLocation
 	var fareByLocation []S2idFare
 
-	data, err := s.Repo.GetAverageFareByLocation(date, year)
+	data, err := s.Repo.GetFareLocationByDate(date, year)
 
 	if data != nil && err == nil {
 		for i := 0; i < len(data); i++ {

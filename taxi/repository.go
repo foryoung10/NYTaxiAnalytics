@@ -1,9 +1,10 @@
 package taxi
 
 import (
-	"NYTaxiAnalytics/database"
 	"log"
 	"strings"
+
+	"github.com/foryoung10/NYTaxiAnalytics/database"
 
 	"cloud.google.com/go/bigquery"
 	"google.golang.org/api/iterator"

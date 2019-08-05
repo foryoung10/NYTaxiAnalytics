@@ -1,12 +1,13 @@
 package main
 
 import (
-	"NYTaxiAnalytics/database"
-	"NYTaxiAnalytics/taxi"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/foryoung10/NYTaxiAnalytics/database"
+	"github.com/foryoung10/NYTaxiAnalytics/taxi"
 
 	"github.com/magiconair/properties/assert"
 )

@@ -1,8 +1,9 @@
 package taxi
 
 import (
-	"NYTaxiAnalytics/database"
 	"encoding/json"
+
+	"github.com/foryoung10/NYTaxiAnalytics/database"
 )
 
 // TaxiJsonRepo is a mock repo that returns static Json data from the data file

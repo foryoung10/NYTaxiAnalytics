@@ -1,12 +1,12 @@
 package main
 
 import (
-	"NYTaxiAnalytics/database"
-	"NYTaxiAnalytics/taxi"
 	"io"
 	"log"
 	"os"
 
+	"github.com/foryoung10/NYTaxiAnalytics/database"
+	"github.com/foryoung10/NYTaxiAnalytics/taxi"
 	"github.com/gin-gonic/gin"
 )
 

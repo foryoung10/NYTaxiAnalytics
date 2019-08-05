@@ -1,8 +1,9 @@
 package taxi
 
 import (
-	"NYTaxiAnalytics/database"
 	"testing"
+
+	"github.com/foryoung10/NYTaxiAnalytics/database"
 )
 
 func TestGetTotalTripsByStartEndDate(t *testing.T) {

@@ -1,4 +1,4 @@
 {
-    "ApplicationCredentialsPath": "[GOOGLE_APPLICATION_CREDENTIALS PATH]",
-    "ProjectName": "[PROJECT_NAME]"
+    "ApplicationCredentialsPath": "",
+    "ProjectName": ""
 }

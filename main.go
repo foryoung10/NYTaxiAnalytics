@@ -1,3 +1,4 @@
+// Main package to setup dependencies and run the server.
 package main
 
 import (
@@ -10,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Setup logger, gin router and api routes.
 func setupRouter(hand taxi.IHandler) *gin.Engine {
 
 	router := gin.New()
@@ -24,11 +26,12 @@ func setupRouter(hand taxi.IHandler) *gin.Engine {
 	}
 	defer f.Close()
 
+	// Setup gin routers
 	gin.DefaultWriter = io.MultiWriter(f)
 	log.SetOutput(gin.DefaultWriter)
 	log.SetFlags(log.LstdFlags)
 
-	// Taxi api routes
+	// Setup api routes
 	router.GET("/total_trips", hand.FetchTotalTrips())
 	router.GET("/average_speed", hand.FetchAverageSpeed())
 	router.GET("/average_fare_heatmap", hand.FetchAverageFareS2id())
@@ -36,7 +39,7 @@ func setupRouter(hand taxi.IHandler) *gin.Engine {
 	return router
 }
 
-// dev router uses json stored in data file
+// Dev router uses json stored in data file.
 func useDevRepo() taxi.Repository {
 	client := database.TestClient{}
 	var r taxi.Repository = taxi.JsonRepository{
@@ -49,7 +52,7 @@ func useDevRepo() taxi.Repository {
 	return r
 }
 
-// BQ repo connects and pulls data from BQ
+// BQ repo connects and pulls data from Bigquery api.
 func useBQRepo() taxi.Repository {
 	// Setup client, taxi repo, service
 	client := database.BigQueryClient{}
@@ -60,16 +63,15 @@ func useBQRepo() taxi.Repository {
 }
 
 func main() {
-	// Initialise logger
 	// Setup big query client
 	database.BigQueryClientSetup()
 
 	// Setup client, taxi repo, service
 
-	// for dev
+	// For dev
 	// var r = useDevRepo()
 
-	// for actual use
+	// For connecting to Bigquery
 	var r = useBQRepo()
 
 	var s = taxi.Service{Repo: r}

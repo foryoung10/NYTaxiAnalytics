@@ -1,24 +1,26 @@
-// taxi models for data returned from big query
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data.
 package taxi
 
-// average speed of all trips on a day
+// Average speed of trips on a date.
 type AverageSpeedByDay struct {
 	AverageSpeed float64 `bigquery:"average_speed" json:"average_speed"`
 }
 
-// total number trips on a day
+// Total number of trips on each date.
 type TotalTripsByDay struct {
 	Date       string `bigquery:"date" json:"date"`
 	TotalTrips int    `bigquery:"total_trips" json:"total_trips"`
 }
 
-// pick up location and fare price
+// Pick up location by latitude and longitude and fare price.
 type FarePickupByLocation struct {
 	Lng  float64 `bigquery:"pickup_longitude"`
 	Lat  float64 `bigquery:"pickup_latitude"`
 	Fare float64 `bigquery:"fare_amount"`
 }
 
+// S2ID location and fare amount.
 type S2idFare struct {
 	S2id string  `json:"s2id"`
 	Fare float64 `json:"fare"`

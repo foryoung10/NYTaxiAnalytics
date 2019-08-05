@@ -1,9 +1,14 @@
-// package data contains sample data obtained from google big query
-// dataset: bigquery-public-data.new_york.tlc_yellow_trips_2015
-// development to be done using sample data before calling the big query api
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data.
 package taxi
 
-// all pickup locations lat, long and fare amount
+// Data file contains sample data obtained from google big query.
+// Dataset: bigquery-public-data.new_york.tlc_yellow_trips_2015.
+// Development to be done using sample data before calling the big query api.
+// Tests are also ran using this file.
+
+// Data: sample for fare amount and pickup locations
+// Fields: pickup_latitude, pickup_longitude, fare_amount
 var FaresData = []string{
 	`[
   {
@@ -118,7 +123,8 @@ var FaresData = []string{
 	``,
 }
 
-// the average speed of all trips over the last 24 hours
+// Data: sample for average speed.
+// Fields: average_speed
 var AverageSpeedData = []string{
 	`[
     {
@@ -137,7 +143,8 @@ var AverageSpeedData = []string{
  ]`,
 }
 
-// total number of trips on each day
+// Data: sample for total trips on a day.
+// Fields: date, tota_trips
 var TotalTripsData = []string{
 	`[
     {
@@ -196,6 +203,7 @@ var TotalTripsData = []string{
   ]`,
 }
 
+// Expected result for test for total trips.
 var totalTripsResult = [][]TotalTripsByDay{
 	{
 		{
@@ -254,6 +262,7 @@ var totalTripsResult = [][]TotalTripsByDay{
 	{},
 }
 
+// Expected result for test for average speed.
 var averageSpeedResult = [][]AverageSpeedByDay{
 	{
 		{
@@ -270,6 +279,7 @@ var averageSpeedResult = [][]AverageSpeedByDay{
 	},
 }
 
+// Expected result for average fare of a location.
 var averageFaresLocationResult = [][]S2idFare{
 	{
 		{

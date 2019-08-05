@@ -1,8 +1,10 @@
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data.
 package taxi
 
-// This file contains the queries for big query
+// This file contains the queries for big query.
 
-// Query for total trips
+// Query for total trips for a start date and end date.
 var totalTripsQ = `
 SELECT
 	CAST(DATE(pickup_datetime) as string) date,
@@ -17,8 +19,7 @@ ORDER BY
 	date
 `
 
-// Query for average speed
-
+// Query for average speed for a date.
 var averageSpeedQ = `
 SELECT
 	ROUND(AVG(trip_distance / TIMESTAMP_DIFF(dropoff_datetime, 
@@ -34,8 +35,8 @@ AND
 	dropoff_datetime > pickup_datetime
 `
 
-// Query for average fares
-var averageFareQ = `
+// Query for location and fares on a date.
+var fareLocationQ = `
 SELECT
   pickup_longitude , pickup_latitude,  fare_amount
 FROM 

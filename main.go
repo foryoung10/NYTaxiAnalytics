@@ -22,6 +22,8 @@ func setupRouter(hand taxi.IHandler) *gin.Engine {
 	if err != nil {
 		log.Println(err)
 	}
+	defer f.Close()
+
 	gin.DefaultWriter = io.MultiWriter(f)
 	log.SetOutput(gin.DefaultWriter)
 	log.SetFlags(log.LstdFlags)

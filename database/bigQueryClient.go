@@ -20,10 +20,8 @@ var config = Configuration{}
 
 const dryRun = false
 
-// to do initialize in main method
 // Initializing Big Query handler, reading config file for
 // Google application credentials and project name
-
 func BigQueryClientSetup() {
 	log.Println("Initializing Big Query handler")
 
@@ -31,19 +29,18 @@ func BigQueryClientSetup() {
 	if err != nil {
 		log.Println(err)
 	}
+	defer file.Close()
+
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&config)
 	if err != nil {
 		log.Println(err)
 	}
 
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", config.ApplicationCredentialsPath)
-
 	if config.ApplicationCredentialsPath == "" {
 		log.Println("GOOGLE_APPLICATION_CREDENTIALS environment must be set")
 		os.Exit(1)
 	}
-
 }
 
 // Exceute a query using the big query client

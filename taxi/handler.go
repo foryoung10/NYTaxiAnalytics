@@ -1,3 +1,5 @@
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data
 package taxi
 
 import (
@@ -8,24 +10,30 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Handler handles and validates requests from the api.
+// FetchTotalTrips: Handles request to get total trips
+// FetchAverageSpeed: Handles request to get average speed
+// FetchAverageFaresS2id: Handles request to get average fare for s2id.
 type IHandler interface {
 	FetchTotalTrips() func(c *gin.Context)
 	FetchAverageSpeed() func(c *gin.Context)
 	FetchAverageFareS2id() func(c *gin.Context)
 }
 
-const maxYear = 2017
-const minYear = 2014
-const format = "2006-01-02"
+const maxYear = 2017        // Max year of available data
+const minYear = 2014        // Min year of available data
+const format = "2006-01-02" // Format of date string: "YYYY-MM-DD"
 
-// Handler validates the input from api
-// If input is valid then calls service
-// Data is only available from @minYear to @maxYear
+// Handler handles and validates requests from the api.
+// Uses service interface
 type Handler struct {
 	Svc IService
 }
 
-// Fetch total trips for a start and end date
+// Fetch total trips on each day for a start date and end date.
+// Validation: Check that start date must be before the end date.
+// Validation: Data is only available from minYear to maxYear.
+// Validation: Date must be in the correct format.
 func (hand Handler) FetchTotalTrips() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		startDate := c.Query("start-date")
@@ -56,13 +64,15 @@ func (hand Handler) FetchTotalTrips() func(c *gin.Context) {
 	}
 }
 
-// Fetch average speed for the last 24 hours (current date -1)
+// Fetch average speed for the last 24 hours (current date -1).
+// Validation: Data is only available from minYear to maxYear.
+// Validation: Date must be in the correct format.
 func (hand Handler) FetchAverageSpeed() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		date := c.Query("date")
 
 		// Get previous date and year
-		prevDate, year, err := getPreviousDateYear(date)
+		prevDate, year, err := getPreviousDateAndYearValidateDate(date)
 		if err != nil {
 			c.JSON(http.StatusNotFound, err.Error())
 			return
@@ -87,7 +97,9 @@ func (hand Handler) FetchAverageSpeed() func(c *gin.Context) {
 	}
 }
 
-// Fetch average fare for a date
+// Fetch average fare amount of a location(s2id) for a date.
+// Validation: Data is only available from minYear to maxYear.
+// Validation: Date must be in the correct format.
 func (hand Handler) FetchAverageFareS2id() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		date := c.Query("date")
@@ -118,8 +130,9 @@ func (hand Handler) FetchAverageFareS2id() func(c *gin.Context) {
 	}
 }
 
-// Returns the previous date and year
-func getPreviousDateYear(date string) (string, int, error) {
+// Validator: Get the previous date and year from the input date.
+// Date should be in correct format
+func getPreviousDateAndYearValidateDate(date string) (string, int, error) {
 	time, err := time.Parse(format, date)
 
 	if err != nil {
@@ -132,7 +145,8 @@ func getPreviousDateYear(date string) (string, int, error) {
 	return previousDate.Format(format), year, nil
 }
 
-// Returns the year
+// Validator: Get the year from the input date.
+// Date should be in correct format
 func getYearValidateDate(date string) (int, error) {
 	time, err := time.Parse(format, date)
 	if err != nil {
@@ -144,9 +158,9 @@ func getYearValidateDate(date string) (int, error) {
 	return year, nil
 }
 
-// Returns the year
-// start date must be before end date
-// start date and end date must be in the same year to reduce size of data being queried
+// Validator: Get the year from the input start date and end date.
+// Start date should be before end date.
+// Start date and end date must be in the same year to reduce size of data being queried.
 func getYearValidateStartEndDate(startDate string, endDate string) (int, error) {
 	start, err := time.Parse(format, startDate)
 	if err != nil {

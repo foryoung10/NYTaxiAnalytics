@@ -1,8 +1,12 @@
+// Package taxi contains library for the taxi entity.
+// Handler, model, query, repository, service, data
 package taxi
 
 import (
 	"testing"
 )
+
+// Test for all date validators.
 
 func TestValidateDate(t *testing.T) {
 	dates := []struct {
@@ -58,7 +62,7 @@ func TestGetPreviousDateYear(t *testing.T) {
 	}
 
 	for _, date := range dates {
-		prevDate, year, _ := getPreviousDateYear(date.input)
+		prevDate, year, _ := getPreviousDateAndYearValidateDate(date.input)
 		if prevDate != date.expectedDate {
 			t.Errorf("Incorrect previous date (%v) -Input (%v) Expected (%v)", prevDate, date.input, date.expectedDate)
 		}

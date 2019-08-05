@@ -9,8 +9,10 @@ import (
 	"cloud.google.com/go/bigquery"
 )
 
+// Creates a Big Query Client connection
 type BigQueryClient struct{}
 
+// Configuration for Big Query setup
 type Configuration struct {
 	ApplicationCredentialsPath string
 	ProjectName                string
@@ -18,10 +20,10 @@ type Configuration struct {
 
 var config = Configuration{}
 
+// Set to true to use dry run.
 const dryRun = false
 
-// Initializing Big Query handler, reading config file for
-// Google application credentials and project name
+// Initializing Big Query Client, reading config file for Google application credentials and project name and setting configuration
 func BigQueryClientSetup() {
 	log.Println("Initializing Big Query handler")
 
@@ -43,10 +45,12 @@ func BigQueryClientSetup() {
 	}
 }
 
-// Exceute a query using the big query client
+// Using the Big Query Client, queries Big Query dataset using the Big Query api and return raw data.
+// Pass in the query and query parameters
 func (c BigQueryClient) Query(q string, parameters []bigquery.QueryParameter) (*bigquery.RowIterator, error) {
 	log.Println("Running BigQueryClient")
 
+	// If config is not set
 	if config.ProjectName == "" || config.ApplicationCredentialsPath == "" {
 		BigQueryClientSetup()
 	}
@@ -60,15 +64,20 @@ func (c BigQueryClient) Query(q string, parameters []bigquery.QueryParameter) (*
 	}
 
 	query := client.Query(q)
+	// Set parameters
 	query.Parameters = parameters
+	// Set location
 	query.Location = "US"
+	// Set dry run
 	query.DryRun = dryRun
 
+	// Run query using job
 	job, err := query.Run(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	// Wait for job to complete
 	status, err := job.Wait(ctx)
 	if err != nil {
 		return nil, err
@@ -80,6 +89,7 @@ func (c BigQueryClient) Query(q string, parameters []bigquery.QueryParameter) (*
 	log.Println(job.Config())
 	log.Println(job.LastStatus())
 
+	//Read data from bigquery
 	res, err := job.Read(ctx)
 	if err != nil {
 		return nil, err

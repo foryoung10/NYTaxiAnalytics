@@ -2,9 +2,11 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
+	"time"
 
 	"github.com/foryoung10/NYTaxiAnalytics/database"
 	"github.com/foryoung10/NYTaxiAnalytics/taxi"
@@ -64,7 +66,15 @@ func useBQRepo() taxi.Repository {
 
 func main() {
 	// Setup big query client
+	// database.MigrateDataFromBigQuery()
+
+	database.QueryDb()
+
 	database.BigQueryClientSetup()
+
+	time1, _ := time.Parse(time.RFC3339, "2014-06-01 05:22:37 UTC")
+
+	fmt.Println(time1)
 
 	// Setup client, taxi repo, service
 

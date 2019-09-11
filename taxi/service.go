@@ -26,7 +26,7 @@ type Service struct {
 func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
 	var result []TotalTripsByDay
 
-	result, _ = s.Repo.GetTotalTripsByStartEndDate(startDate, endDate, year)
+	result, _ = s.Repo.GetTotalTripsByStartEndDate(startDate, endDate)
 
 	return result, nil
 }
@@ -36,7 +36,7 @@ func (s Service) GetTotalTripsByStartEndDate(startDate string, endDate string, y
 func (s Service) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
 	var result []AverageSpeedByDay
 
-	result, _ = s.Repo.GetAverageSpeedByDate(date, year)
+	result, _ = s.Repo.GetAverageSpeedByDate(date)
 
 	return result, nil
 }

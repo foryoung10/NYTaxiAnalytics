@@ -2,12 +2,10 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
-	"time"
-
+	
 	"github.com/foryoung10/NYTaxiAnalytics/database"
 	"github.com/foryoung10/NYTaxiAnalytics/taxi"
 	"github.com/gin-gonic/gin"
@@ -54,35 +52,36 @@ func useDevRepo() taxi.Repository {
 	return r
 }
 
-// BQ repo connects and pulls data from Bigquery api.
-func useBQRepo() taxi.Repository {
+// Setup connection to BQ and connection to database
+func setUpDatabase() taxi.Repository {
 	// Setup client, taxi repo, service
-	client := database.BigQueryClient{}
-	var r taxi.Repository = taxi.BqRepository{
-		Client: client,
+	db := database.Connect()
+	bq := database.BigQueryClientSetup()
+
+	var dbConn database.TaxiConn = database.TaxiConn{
+		Db : db,
 	}
+
+	var bqClient database.BigQueryClient = database.BigQueryClient{
+		Client : bq,
+	}
+
+	var r taxi.Repository = taxi.DataRepository{
+		BqClient: bqClient,
+		DbClient: dbConn,
+	}
+
 	return r
 }
 
 func main() {
-	// Setup big query client
-	// database.MigrateDataFromBigQuery()
-
-	database.QueryDb()
-
-	database.BigQueryClientSetup()
-
-	time1, _ := time.Parse(time.RFC3339, "2014-06-01 05:22:37 UTC")
-
-	fmt.Println(time1)
-
 	// Setup client, taxi repo, service
 
 	// For dev
 	// var r = useDevRepo()
 
-	// For connecting to Bigquery
-	var r = useBQRepo()
+	// Setup of databases
+	var r = setUpDatabase()
 
 	var s = taxi.Service{Repo: r}
 	var hand = taxi.Handler{Svc: s}

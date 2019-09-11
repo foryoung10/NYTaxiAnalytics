@@ -5,22 +5,23 @@ package taxi
 import (
 	"log"
 	"strings"
-
+	
 	"github.com/foryoung10/NYTaxiAnalytics/database"
-
+	
 	"cloud.google.com/go/bigquery"
 	"google.golang.org/api/iterator"
 )
 
 const tablePlaceholder string = "@tables"
+const tableName string = "taxis"
 
 // Repository handles data transfer between application and database.
 // GetTotalTripsByStartEndDate: Gets trips data for a start date and end date from the database and converts to TotalTripsByDay array.
 // GetAverageSpeedByDate: Gets average speed data for a date from the database and converts to AverageSpeedByDay array.
 // GetFareLocationByDate: Get fares and location for a date from the database and converts to FarePickupByLocation array.
 type Repository interface {
-	GetTotalTripsByStartEndDate(string, string, int) ([]TotalTripsByDay, error)
-	GetAverageSpeedByDate(string, int) ([]AverageSpeedByDay, error)
+	GetTotalTripsByStartEndDate(string, string) ([]TotalTripsByDay, error)
+	GetAverageSpeedByDate(string) ([]AverageSpeedByDay, error)
 	GetFareLocationByDate(string, int) ([]FarePickupByLocation, error)
 }
 
@@ -28,96 +29,34 @@ type Repository interface {
 // The repo handles the setting of Big query parameters
 // The repo handles the query generation from the query file
 // The repo coverts the raw data to a struct
-type BqRepository struct {
-	Client database.Client // Set Client
+type DataRepository struct {
+	BqClient database.BqClient
+	DbClient database.TaxiConn
 }
 
+
 // GetTotalTripsByStartEndDate: Gets trips data for a start date and end date from the database and converts to TotalTripsByDay array.
-func (r BqRepository) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
-	// Set Big query parameters
-	parameters := []bigquery.QueryParameter{
-		{
-			Name:  "startDate",
-			Value: startDate,
-		},
-		{
-			Name:  "endDate",
-			Value: endDate,
-		},
-	}
+func (r DataRepository) GetTotalTripsByStartEndDate(startDate string, endDate string) ([]TotalTripsByDay, error) {
 
-	// Generating query
-	var res []TotalTripsByDay
-	tables := getTaxiTables(year)
-	query := strings.Replace(totalTripsQ, tablePlaceholder, tables, 1)
+	var trips []TotalTripsByDay
+	db := r.DbClient.Db
+	db.Table(tableName).Select("date, sum(total_trips) as total_trips").Where("date BETWEEN ? AND ?", startDate, endDate).Group("date").Scan(&trips)
 
-	rows, err := r.Client.Query(query, parameters)
-
-	log.Println(rows.TotalRows)
-
-	if err != nil {
-		return nil, err
-	}
-
-	// Read and converts to TotalTripsByDay array
-	for {
-		var tmp TotalTripsByDay
-		err := rows.Next(&tmp)
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			return nil, err
-		}
-		res = append(res, tmp)
-	}
-
-	return res, nil
+	return trips, nil
 }
 
 // GetAverageSpeedByDate: Gets average speed data for a date from the database and converts to AverageSpeedByDay array.
-func (r BqRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
-	// Set Big query parameters
-	parameters := []bigquery.QueryParameter{
-		{
-			Name:  "date",
-			Value: date,
-		},
-	}
+func (r DataRepository) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, error) {
 
-	// Generating query
-	tables := getTaxiTables(year)
-	query := strings.Replace(averageSpeedQ, tablePlaceholder, tables, 1)
-
-	rows, err := r.Client.Query(query, parameters)
-	var res []AverageSpeedByDay
-
-	log.Println(rows.TotalRows)
-
-	if err != nil {
-		return nil, err
-	}
-
-	// Read and converst to AverageSpeedByDay array
-	for {
-		var tmp AverageSpeedByDay
-		err := rows.Next(&tmp)
-
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			return nil, err
-		}
-
-		res = append(res, tmp)
-	}
-
-	return res, nil
+	var avgSpeed []AverageSpeedByDay
+	db := r.DbClient.Db
+	db.Table(tableName).Select("round(avg(average_speed),1) as average_speed").Where("date = ?", date).Scan(&avgSpeed)
+	
+	return avgSpeed, nil
 }
 
 // GetFareLocationByDate: Get fares and location for a date from the database and converts to FarePickupByLocation array.
-func (r BqRepository) GetFareLocationByDate(date string, year int) ([]FarePickupByLocation, error) {
+func (r DataRepository) GetFareLocationByDate(date string, year int) ([]FarePickupByLocation, error) {
 	// Set big query parameters
 	parameters := []bigquery.QueryParameter{
 		{
@@ -130,7 +69,7 @@ func (r BqRepository) GetFareLocationByDate(date string, year int) ([]FarePickup
 	tables := getTaxiTables(year)
 	query := strings.Replace(fareLocationQ, tablePlaceholder, tables, 1)
 
-	rows, err := r.Client.Query(query, parameters)
+	rows, err := r.BqClient.Query(query, parameters)
 	var res []FarePickupByLocation
 
 	log.Println(rows.TotalRows)

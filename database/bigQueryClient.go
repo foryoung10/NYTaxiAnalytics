@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"sync"
 	"os"
 
 	"cloud.google.com/go/bigquery"
@@ -12,7 +13,9 @@ import (
 )
 
 // Creates a Big Query Client connection
-type BigQueryClient struct{}
+type BigQueryClient struct{
+	Client *bigquery.Client
+}
 
 // Configuration for Big Query setup
 type Configuration struct {
@@ -21,30 +24,43 @@ type Configuration struct {
 }
 
 var config = Configuration{}
+var bq *bigquery.Client
+var once sync.Once
 
 // Set to true to use dry run.
 const dryRun = false
 
 // Initializing Big Query Client, reading config file for Google application credentials and project name and setting configuration
-func BigQueryClientSetup() {
+func BigQueryClientSetup() *bigquery.Client{
 	log.Println("Initializing Big Query handler")
 
-	file, err := os.Open("config.json")
-	if err != nil {
-		log.Println(err)
-	}
-	defer file.Close()
+	once.Do(func() {
+		file, err := os.Open("config.json")
+		if err != nil {
+			log.Println(err)
+		}
+		defer file.Close()
 
-	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&config)
-	if err != nil {
-		log.Println(err)
-	}
+		decoder := json.NewDecoder(file)
+		err = decoder.Decode(&config)
+		if err != nil {
+			log.Println(err)
+		}
 
-	if config.ApplicationCredentialsPath == "" {
-		log.Println("GOOGLE_APPLICATION_CREDENTIALS environment must be set")
-		os.Exit(1)
-	}
+		if config.ApplicationCredentialsPath == "" {
+			log.Println("GOOGLE_APPLICATION_CREDENTIALS environment must be set")
+			os.Exit(1)
+		}
+
+		ctx := context.Background()
+
+		bq, err = bigquery.NewClient(ctx, config.ProjectName, option.WithCredentialsFile(config.ApplicationCredentialsPath))
+		if err != nil {
+			log.Println(err)
+		}
+	})
+
+	return bq
 }
 
 // Using the Big Query Client, queries Big Query dataset using the Big Query api and return raw data.
@@ -52,19 +68,9 @@ func BigQueryClientSetup() {
 func (c BigQueryClient) Query(q string, parameters []bigquery.QueryParameter) (*bigquery.RowIterator, error) {
 	log.Println("Running BigQueryClient")
 
-	// If config is not set
-	if config.ProjectName == "" || config.ApplicationCredentialsPath == "" {
-		BigQueryClientSetup()
-	}
-
 	ctx := context.Background()
 
-	client, err := bigquery.NewClient(ctx, config.ProjectName, option.WithCredentialsFile(config.ApplicationCredentialsPath))
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-
+	client := c.Client
 	query := client.Query(q)
 	// Set parameters
 	query.Parameters = parameters

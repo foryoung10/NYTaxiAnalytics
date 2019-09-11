@@ -10,14 +10,14 @@ import (
 
 // JsonRepository is a mock repo that returns static Json data from the data file
 type JsonRepository struct {
-	Client           database.Client // Set Client
+	Client           database.BqClient // Set Client
 	TripsData        string          // Set Trips data
 	AverageSpeedData string          // Set Average speed data
 	FaresData        string          // Set Fare and location data
 }
 
 // GetTotalTripsByStartEndDate: Gets trips data for a start date and end date from the database and converts to TotalTripsByDay array.
-func (r JsonRepository) GetTotalTripsByStartEndDate(startDate string, endDate string, year int) ([]TotalTripsByDay, error) {
+func (r JsonRepository) GetTotalTripsByStartEndDate(startDate string, endDate string) ([]TotalTripsByDay, error) {
 	var result []TotalTripsByDay
 
 	if err := json.Unmarshal([]byte(r.TripsData), &result); err != nil {
@@ -29,7 +29,7 @@ func (r JsonRepository) GetTotalTripsByStartEndDate(startDate string, endDate st
 }
 
 // GetAverageSpeedByDate: Gets average speed data for a date from the database and converts to AverageSpeedByDay array.
-func (r JsonRepository) GetAverageSpeedByDate(date string, year int) ([]AverageSpeedByDay, error) {
+func (r JsonRepository) GetAverageSpeedByDate(date string) ([]AverageSpeedByDay, error) {
 	var result []AverageSpeedByDay
 
 	if err := json.Unmarshal([]byte(r.AverageSpeedData), &result); err != nil {

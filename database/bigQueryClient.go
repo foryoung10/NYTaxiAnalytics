@@ -4,8 +4,8 @@ package database
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
-	"sync"
 	"os"
 
 	"cloud.google.com/go/bigquery"
@@ -13,7 +13,7 @@ import (
 )
 
 // Creates a Big Query Client connection
-type BigQueryClient struct{
+type BigQueryClient struct {
 	Client *bigquery.Client
 }
 
@@ -25,48 +25,44 @@ type Configuration struct {
 
 var config = Configuration{}
 var bq *bigquery.Client
-var once sync.Once
 
 // Set to true to use dry run.
 const dryRun = false
 
 // Initializing Big Query Client, reading config file for Google application credentials and project name and setting configuration
-func BigQueryClientSetup() *bigquery.Client{
+func BigQueryClientSetup() *bigquery.Client {
 	log.Println("Initializing Big Query handler")
 
-	once.Do(func() {
-		file, err := os.Open("config.json")
-		if err != nil {
-			log.Println(err)
-		}
-		defer file.Close()
+	file, err := os.Open("config.json")
+	if err != nil {
+		log.Println(err)
+	}
+	defer file.Close()
 
-		decoder := json.NewDecoder(file)
-		err = decoder.Decode(&config)
-		if err != nil {
-			log.Println(err)
-		}
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&config)
+	if err != nil {
+		log.Println(err)
+	}
 
-		if config.ApplicationCredentialsPath == "" {
-			log.Println("GOOGLE_APPLICATION_CREDENTIALS environment must be set")
-			os.Exit(1)
-		}
+	if config.ApplicationCredentialsPath == "" {
+		log.Println("GOOGLE_APPLICATION_CREDENTIALS environment must be set")
+		os.Exit(1)
+	}
 
-		ctx := context.Background()
+	ctx := context.Background()
 
-		bq, err = bigquery.NewClient(ctx, config.ProjectName, option.WithCredentialsFile(config.ApplicationCredentialsPath))
-		if err != nil {
-			log.Println(err)
-		}
-	})
-
+	bq, err = bigquery.NewClient(ctx, config.ProjectName, option.WithCredentialsFile(config.ApplicationCredentialsPath))
+	if err != nil {
+		log.Println(err)
+	}
 	return bq
 }
 
 // Using the Big Query Client, queries Big Query dataset using the Big Query api and return raw data.
 // Pass in the query and query parameters
 func (c BigQueryClient) Query(q string, parameters []bigquery.QueryParameter) (*bigquery.RowIterator, error) {
-	log.Println("Running BigQueryClient")
+	fmt.Println("Running BigQueryClient")
 
 	ctx := context.Background()
 

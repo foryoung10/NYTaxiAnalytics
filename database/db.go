@@ -2,12 +2,16 @@ package database
 
 import (
 	"fmt"
-	
+	"sync"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var db *gorm.DB
+
+var once sync.Once
+
 type TaxiConn struct {
 	Db *gorm.DB
 }
@@ -18,14 +22,14 @@ const (
 	port     = 5432
 	user     = "postgres"
 	password = "1234"
-	dbname   = "Taxi"
+	dbname   = "TaxiData"
 )
 
 func Connect() *gorm.DB {
-	once.Do(func()	{
+	once.Do(func() {
 		psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+			"password=%s dbname=%s sslmode=disable",
+			host, port, user, password, dbname)
 		var err error
 		db, err = gorm.Open("postgres", psqlInfo)
 		if err != nil {

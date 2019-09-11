@@ -9,7 +9,5 @@ type BqClient interface {
 	Query(q string, parameters []bigquery.QueryParameter) (*bigquery.RowIterator, error)
 }
 
-
-
 type DbClient interface {
 }

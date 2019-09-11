@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
-	
+
 	"github.com/foryoung10/NYTaxiAnalytics/database"
 	"github.com/foryoung10/NYTaxiAnalytics/taxi"
 	"github.com/gin-gonic/gin"
@@ -53,17 +53,17 @@ func useDevRepo() taxi.Repository {
 }
 
 // Setup connection to BQ and connection to database
-func setUpDatabase() taxi.Repository {
+func setUpRepo() taxi.Repository {
 	// Setup client, taxi repo, service
 	db := database.Connect()
 	bq := database.BigQueryClientSetup()
 
 	var dbConn database.TaxiConn = database.TaxiConn{
-		Db : db,
+		Db: db,
 	}
 
 	var bqClient database.BigQueryClient = database.BigQueryClient{
-		Client : bq,
+		Client: bq,
 	}
 
 	var r taxi.Repository = taxi.DataRepository{
@@ -81,7 +81,7 @@ func main() {
 	// var r = useDevRepo()
 
 	// Setup of databases
-	var r = setUpDatabase()
+	var r = setUpRepo()
 
 	var s = taxi.Service{Repo: r}
 	var hand = taxi.Handler{Svc: s}

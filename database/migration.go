@@ -27,7 +27,7 @@ func MigrateDataFromBigQuery() {
 		} else {
 			colour = "green"
 		}
-	
+
 		q := strings.Replace(query, "@table", schema+table, 1)
 		rows, err := client.Query(q, parameters)
 

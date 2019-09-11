@@ -51,8 +51,11 @@ http://localhost:8080/average_speed_24hrs?date=<date>>
 
 The main design of the api is to let Big query do the heavy lifting whenever possible.  
 Big query can process large volumes of datasets very quickly.  
-Thus for 2 of the endpoints **Average speed in the past 24 hours** and **Total trips per day is a direct load** loads from Big query processing.  
-For the **Fare heatmap** data some processing is needed from the bigquery data.
+
+For 2 of the endpoints **Average speed in the past 24 hours** and **Total trips per day is a direct load**, data is procesed by Bigquery and written to database. The api queries from the database.  
+DB migration script is provided to pull data from Bigquery and writing to database.
+
+For the **Fare heatmap** data some processing is needed from the raw bigquery data.
 
 There are 2 packages  
 **taxi**: Package for the taxi entity contains handler, model, queries, repositories, service  
